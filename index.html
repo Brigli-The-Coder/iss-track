@@ -7,7 +7,6 @@
 
 <!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
@@ -17,10 +16,6 @@ body {
   font-family: 'Orbitron', sans-serif;
   background: #000;
   color: #fff;
-  background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
 .container-custom {
@@ -48,9 +43,6 @@ h2 {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-image: url('0_Earth_Planet_3840x2160.mp4');
-  background-size: cover;
-  background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,6 +50,10 @@ h2 {
   opacity: 1;
   transform: scale(1);
   transition: transform 1s ease, opacity 1s ease;
+}
+
+#fullscreenModal video {
+  position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;
 }
 
 #fullscreenModal h1 {
@@ -83,6 +79,7 @@ h2 {
 </head>
 <body>
 
+<!-- Latitude / Longitude Inputs -->
 <div class="container container-custom row justify-content-center" id="input-container">
   <div class="col-md-3 col-5 mb-2">
     <label>Latitude: <input id="input-lat" class="form-control text-center" value="42.068" /></label>
@@ -92,22 +89,23 @@ h2 {
   </div>
 </div>
 
+<!-- ISS Info -->
 <div class="container container-custom" id="info">
-  Loading ISS data...
+  Click the screen to start tracking ISS...
 </div>
 
+<!-- Map -->
 <div class="container container-custom" id="map"></div>
 
+<!-- Scripts -->
 <script src="https://unpkg.com/satellite.js/dist/satellite.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Audio dhe Modal -->
+<!-- Audio and Modal -->
 <audio id="openSound" src="./mixkit-deep-space-atmosphere-2009.wav"></audio>
-
 <div id="fullscreenModal">
-  <video autoplay muted loop playsinline 
-         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+  <video autoplay muted loop playsinline>
     <source src="0_Earth_Planet_3840x2160.mp4" type="video/mp4">
   </video>
   <h1>Welcome to the ISS Live Tracker 🚀</h1>
@@ -117,11 +115,16 @@ h2 {
 // Modal me audio
 const modal = document.getElementById('fullscreenModal');
 const openSound = document.getElementById('openSound');
+let issTrackingStarted = false;
+
 modal.addEventListener('click', () => {
   openSound.play();
   modal.style.transform = 'scale(3)';
   modal.style.opacity = '0';
-  setTimeout(() => modal.style.display='none', 1000);
+  setTimeout(() => {
+    modal.style.display='none';
+    issTrackingStarted = true; // fillon tracking pas klikimit
+  }, 1000);
 });
 
 // Initial lat/lon
@@ -192,9 +195,15 @@ function elevation(satrec, date){
   return el;
 }
 
+// Update loop
 (function updateLoop(){
   const speedKmS = 7.66;
   function update(){
+    if(!issTrackingStarted){
+      requestAnimationFrame(update);
+      return; // nuk bën update derisa të klikohet modal
+    }
+
     const now = new Date();
     const pos = getLatLon(satrec, now);
     if(!pos) return;
@@ -242,4 +251,3 @@ function elevation(satrec, date){
 
 </body>
 </html>
-
