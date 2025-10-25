@@ -181,9 +181,9 @@ let obsLon = parseFloat(document.getElementById('input-lon').value);
 const info = document.getElementById('info');
 
 const map = L.map('map').setView([obsLat, obsLon], 5);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  attribution:'&copy; OpenStreetMap contributors',
-  opacity:0.6
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, NASA, USGS',
+    maxZoom: 19
 }).addTo(map);
 
 let observerMarker = L.marker([obsLat,obsLon]).addTo(map).bindPopup('Shkodër').openPopup();
@@ -301,3 +301,4 @@ function elevation(satrec, date){
 </script>
 </body>
 </html>
+
