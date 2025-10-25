@@ -12,7 +12,7 @@
     background:#000;
     color:#fff;
     overflow-x:hidden;
-    background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg?t=st=1761427893~exp=1761431493~hmac=ce0301ba83787af265d00f2130c7c07428d2247082a6665c51674dc648dbcc0b&w=1060');
+    background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -62,6 +62,65 @@
     margin-bottom:10px;
     text-shadow: 0 0 10px #0ff;
   }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .container {
+      width:80%;
+      padding:15px;
+    }
+
+    #info {
+      font-size:18px;
+    }
+
+    #input-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size:18px;
+    }
+
+    #input-container label input {
+      width:80%;
+      font-size:18px;
+    }
+
+    #map {
+      height:60vh; /* më e madhe në mobile */
+    }
+
+    h2 {
+      font-size:1.8em;
+    }
+
+    #fullscreenModal h1 {
+      font-size:2.5em !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #info {
+      font-size:20px;
+    }
+
+    #input-container label input {
+      width:80%;
+      font-size:20px;
+    }
+
+    #map {
+      height:70vh;
+    }
+
+    h2 {
+      font-size:2em;
+    }
+
+    #fullscreenModal h1 {
+      font-size:2em !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -80,14 +139,13 @@
 <script src="https://unpkg.com/satellite.js/dist/satellite.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<!-- Audio dhe modal -->
 <audio id="openSound" src="./mixkit-deep-space-atmosphere-2009.wav"></audio>
 
 <div id="fullscreenModal" style="
   position: fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg?t=st=1761427893~exp=1761431493~hmac=ce0301ba83787af265d00f2130c7c07428d2247082a6665c51674dc648dbcc0b&w=1060');
+  background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -109,7 +167,6 @@
 </div>
 
 <script>
-// Modal me audio
 const modal = document.getElementById('fullscreenModal');
 const openSound = document.getElementById('openSound');
 modal.addEventListener('click', () => {
@@ -119,12 +176,10 @@ modal.addEventListener('click', () => {
   setTimeout(() => modal.style.display='none', 1000);
 });
 
-// Initial lat/lon
 let obsLat = parseFloat(document.getElementById('input-lat').value);
 let obsLon = parseFloat(document.getElementById('input-lon').value);
 const info = document.getElementById('info');
 
-// Harta
 const map = L.map('map').setView([obsLat, obsLon], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   attribution:'&copy; OpenStreetMap contributors',
@@ -145,7 +200,6 @@ document.getElementById('input-lon').addEventListener('change',(e)=>{
   map.setView([obsLat,obsLon],5);
 });
 
-// FUNKSIONET kryesore
 async function fetchTLE(){
   const res = await fetch('https://celestrak.com/NORAD/elements/stations.txt');
   const txt = await res.text();
@@ -220,7 +274,6 @@ function elevation(satrec, date){
     if(issTrail) map.removeLayer(issTrail);
     issTrail = L.polyline(points,{color:'#f0f',weight:2,opacity:0.8}).addTo(map);
 
-    // Llogarit Next pass
     let nextPassMin = '-';
     for(let t=0;t<24*60*60;t+=10){
       const future = new Date(now.getTime()+t*1000);
