@@ -48,7 +48,7 @@ h2 {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background-image: url('https://img.freepik.com/free-photo/earth-seen-from-space_23-2150528643.jpg');
+  background-image: url('0_Earth_Planet_3840x2160.mp4');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -106,6 +106,10 @@ h2 {
 <audio id="openSound" src="./mixkit-deep-space-atmosphere-2009.wav"></audio>
 
 <div id="fullscreenModal">
+  <video autoplay muted loop playsinline 
+         style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;">
+    <source src="0_Earth_Planet_3840x2160.mp4" type="video/mp4">
+  </video>
   <h1>Welcome to the ISS Live Tracker 🚀</h1>
 </div>
 
@@ -238,3 +242,4 @@ function elevation(satrec, date){
 
 </body>
 </html>
+
