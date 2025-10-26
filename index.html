@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>ISS & Satellites Live Tracker — Universe Layout</title>
 
-<!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
@@ -21,7 +20,6 @@ body {
   background-repeat: no-repeat;
   background-position: center;
 }
-
 .container-custom {
   background: rgba(0,0,0,0.6);
   padding: 20px;
@@ -29,55 +27,45 @@ body {
   box-shadow: 0 0 30px rgba(0,255,255,0.2);
   margin-bottom: 20px;
 }
-
-#map {
-  height: 60vh;
-  border-radius: 12px;
-  border: 1px solid #0ff;
-}
-
-h2 {
-  text-align: center;
-  color: #0ff;
-  margin-bottom: 10px;
-  text-shadow: 0 0 10px #0ff;
-}
+#map { height: 60vh; border-radius: 12px; border: 1px solid #0ff; }
+h2 { text-align: center; color: #0ff; margin-bottom: 10px; text-shadow: 0 0 10px #0ff; }
 
 #fullscreenModal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  position: fixed; top:0; left:0; width:100%; height:100%;
   background-image: url('3d-rendering-planet-earth.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 1;
-  transform: scale(1);
-  transition: transform 1s ease, opacity 1s ease;
-  cursor: pointer;
+  background-size: cover; background-position:center;
+  display:flex; justify-content:center; align-items:center;
+  z-index:1000; opacity:1; transform:scale(1);
+  transition:transform 1s ease, opacity 1s ease; cursor:pointer;
+}
+#fullscreenModal h1 { color:transparent; font-size:3em; -webkit-text-stroke:1px #0ff; text-align:center; }
+
+.btn-futuristic {
+  display:block;
+  margin:20px auto 0 auto;
+  padding:12px 30px;
+  font-size:1.2em;
+  color:#0ff;
+  background:rgba(0,0,0,0.7);
+  border:1px solid #0ff;
+  border-radius:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  transition:all 0.3s;
+}
+.btn-futuristic:hover {
+  background:#0ff;
+  color:#000;
+  box-shadow:0 0 20px #0ff;
+  transform:scale(1.05);
 }
 
-#fullscreenModal h1 {
-  color: transparent;
-  font-size: 3em;
-  -webkit-text-stroke: 1px #0ff;
-  text-align: center;
+@media (max-width:768px){
+  .container-custom{padding:15px;} #map{height:50vh;}
+  h2{font-size:1.8em;} #fullscreenModal h1{font-size:2.5em!important;}
 }
-
-@media (max-width: 768px) {
-  .container-custom { padding: 15px; }
-  #map { height: 50vh; }
-  h2 { font-size: 1.8em; }
-  #fullscreenModal h1 { font-size: 2.5em !important; }
-}
-
-@media (max-width: 480px) {
-  #map { height: 45vh; }
-  h2 { font-size: 2em; }
-  #fullscreenModal h1 { font-size: 2em !important; }
+@media (max-width:480px){
+  #map{height:45vh;} h2{font-size:2em;} #fullscreenModal h1{font-size:2em!important;}
 }
 </style>
 </head>
@@ -93,7 +81,7 @@ h2 {
 </div>
 <br><br>
 
-<!-- Boxes for satellites info -->
+<!-- Satellite Info -->
 <div class="container">
   <div class="row">
     <div class="col-md-6 mb-3">
@@ -130,25 +118,30 @@ h2 {
         <p>ESA satellite monitoring Earth and climate.</p>
         <div id="sentinel-info">Loading Sentinel-2A data...</div>
       </div>
+      
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="container-custom">
+        <h2 class="text-warning">View More Satellites 🌌</h2>
+        <div id="hubble-info"><button id="moreSatellitesBtn" class="btn-futuristic">Click Here</button></div>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="container container-custom" id="map"></div>
 
+<audio id="openSound" src="./beep1.mp3"></audio>
+<audio id="touchSound" src="./beep2.mp3"></audio>
+<audio id="nextPageSound" src="./beep3.mp3"></audio>
+
+<div id="fullscreenModal"><h1>Welcome to the ISS & Satellites Tracker 🚀</h1></div>
+
 <script src="https://unpkg.com/satellite.js/dist/satellite.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<audio id="openSound" src="./beep1.mp3"></audio>
-<audio id="touchSound" src="./beep2.mp3"></audio>
-
-<div id="fullscreenModal">
-  <h1>Welcome to the ISS & Satellites Tracker 🚀</h1>
-</div>
-
 <script>
-// === Modal me audio dhe full-screen direkt ===
 const modal = document.getElementById('fullscreenModal');
 const openSound = document.getElementById('openSound');
 
@@ -156,31 +149,21 @@ modal.addEventListener('click', async () => {
   openSound.play();
   modal.style.transform = 'scale(3)';
   modal.style.opacity = '0';
-
-  // provon full-screen API
-  try {
-    await document.documentElement.requestFullscreen();
-  } catch(err) {
-    console.warn('Fullscreen refuzuar:', err);
-  }
-
+  try { await document.documentElement.requestFullscreen(); } 
+  catch(err){ console.warn('Fullscreen refuzuar:', err); }
   setTimeout(() => modal.style.display='none', 1000);
 });
 
-// === Inicializim koordinatash ===
 let obsLat = parseFloat(document.getElementById('input-lat').value);
 let obsLon = parseFloat(document.getElementById('input-lon').value);
 
-// === Krijo hartën ===
 const map = L.map('map').setView([obsLat, obsLon], 5);
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  attribution: 'Tiles &copy; Esri — Source: Esri, NASA, USGS',
-  maxZoom: 19
+  attribution: 'Tiles © Esri — NASA, USGS', maxZoom: 19
 }).addTo(map);
 
 let observerMarker = L.marker([obsLat,obsLon]).addTo(map).bindPopup('Shkodër').openPopup();
 
-// === Funksione ndihmëse ===
 function getLatLon(satrec,date){
   const pv = satellite.propagate(satrec,date);
   if(!pv.position) return null;
@@ -189,110 +172,54 @@ function getLatLon(satrec,date){
   return { lat:satellite.radiansToDegrees(pos.latitude), lon:satellite.radiansToDegrees(pos.longitude) };
 }
 
-// === Touch audio për çdo prekje të përdoruesit ===
 const touchSound = document.getElementById('touchSound');
-document.addEventListener('touchstart', () => { touchSound.currentTime = 0; touchSound.play(); });
-document.addEventListener('click', () => { touchSound.currentTime = 0; touchSound.play(); });
+document.addEventListener('click',()=>{ touchSound.currentTime=0; touchSound.play(); });
 
-// === Lista e satelitëve ===
 const satellites = [
-  {
-    name: 'ISS',
-    infoBox: document.getElementById('iss-info'),
-    tle: [
-      "1 25544U 98067A   25303.54055635  .00021058  00000+0  40487-3 0  9994",
-      "2 25544  51.6457 327.6030 0009519 307.5690  52.4402 15.49736178361034"
-    ],
-    color: '#0ff',
-    speed: 7.66,
-    label: 'ISS Current Position'
-  },
-  {
-    name: 'Albania 1',
-    infoBox: document.getElementById('alb1-info'),
-    tle: [
-      "1 70001U 23001A   24300.00000000  .00000010  00000+0  00000+0 0  9991",
-      "2 70001  97.5000  45.0000 0001000 120.0000 250.0000 14.95000000    01"
-    ],
-    color: '#f00',
-    speed: 7.5,
-    label: 'Albania 1'
-  },
-  {
-    name: 'Albania 2',
-    infoBox: document.getElementById('alb2-info'),
-    tle: [
-      "1 70002U 23002A   24300.00000000  .00000012  00000+0  00000+0 0  9992",
-      "2 70002  97.5500  40.0000 0001000 130.0000 260.0000 14.95000000    02"
-    ],
-    color: '#000',
-    speed: 7.5,
-    label: 'Albania 2'
-  },
-  {
-    name: 'Hubble',
-    infoBox: document.getElementById('hubble-info'),
-    tle: [
-      "1 20580U 90037B   24300.12345678  .00000520  00000+0  00000+0 0  9993",
-      "2 20580  28.4711 221.3942 0002944  83.5340 276.6088 15.09123621250925"
-    ],
-    color: '#ffa500',
-    speed: 7.6,
-    label: 'Hubble Telescope'
-  },
-  {
-    name: 'Sentinel-2A',
-    infoBox: document.getElementById('sentinel-info'),
-    tle: [
-      "1 40697U 15028A   24300.23456789  .00000012  00000+0  00000+0 0  9994",
-      "2 40697  98.5660  45.0000 0001200 120.0000 250.0000 14.30800000    03"
-    ],
-    color: '#0f0',
-    speed: 7.5,
-    label: 'Sentinel-2A'
-  }
+  {name:'ISS', infoBox:document.getElementById('iss-info'),
+   tle:["1 25544U 98067A   25303.54055635  .00021058  00000+0  40487-3 0  9994",
+        "2 25544  51.6457 327.6030 0009519 307.5690  52.4402 15.49736178361034"],
+   color:'#0ff', speed:7.66, label:'ISS Current Position'},
+  {name:'Albania 1', infoBox:document.getElementById('alb1-info'),
+   tle:["1 70001U 23001A   24300.00000000  .00000010  00000+0  00000+0 0  9991",
+        "2 70001  97.5000  45.0000 0001000 120.0000 250.0000 14.95000000    01"],
+   color:'#f00', speed:7.5, label:'Albania 1'},
+  {name:'Albania 2', infoBox:document.getElementById('alb2-info'),
+   tle:["1 70002U 23002A   24300.00000000  .00000012  00000+0  00000+0 0  9992",
+        "2 70002  97.5500  40.0000 0001000 130.0000 260.0000 14.95000000    02"],
+   color:'#000', speed:7.5, label:'Albania 2'},
+  {name:'Hubble', infoBox:document.getElementById('hubble-info'),
+   tle:["1 20580U 90037B   24300.12345678  .00000520  00000+0  00000+0 0  9993",
+        "2 20580  28.4711 221.3942 0002944  83.5340 276.6088 15.09123621250925"],
+   color:'#ffa500', speed:7.6, label:'Hubble Telescope'},
+  {name:'Sentinel-2A', infoBox:document.getElementById('sentinel-info'),
+   tle:["1 40697U 15028A   24300.23456789  .00000012  00000+0  00000+0 0  9994",
+        "2 40697  98.5660  45.0000 0001200 120.0000 250.0000 14.30800000    03"],
+   color:'#0f0', speed:7.5, label:'Sentinel-2A'}
 ];
 
-// === Përditësimi i satelitëve në hartë dhe parashikimi ===
-satellites.forEach(sat => {
+satellites.forEach(sat=>{
   const satrec = satellite.twoline2satrec(sat.tle[0], sat.tle[1]);
-  let marker = null;
-  let trail = null;
-
-  function updateSat() {
-    const now = new Date();
-    const pos = getLatLon(satrec, now);
-    if (!pos) return;
-
-    if (marker) marker.setLatLng([pos.lat, pos.lon]);
-    else marker = L.circleMarker([pos.lat, pos.lon], {
-      radius: 8,
-      color: sat.color,
-      fillColor: sat.color,
-      fillOpacity: 0.9
-    }).addTo(map).bindPopup(sat.label);
-
-    const points = [];
-    for(let t=0; t<=5400; t+=5){
-      const future = getLatLon(satrec,new Date(now.getTime()+t*1000));
-      if(future) points.push([future.lat,future.lon]);
-    }
+  let marker=null, trail=null;
+  function updateSat(){
+    const now=new Date(); const pos=getLatLon(satrec,now);
+    if(!pos)return;
+    if(marker) marker.setLatLng([pos.lat,pos.lon]);
+    else marker=L.circleMarker([pos.lat,pos.lon],{radius:8,color:sat.color,fillColor:sat.color,fillOpacity:0.9}).addTo(map).bindPopup(sat.label);
+    const points=[];
+    for(let t=0;t<=5400;t+=5){const f=getLatLon(satrec,new Date(now.getTime()+t*1000));if(f)points.push([f.lat,f.lon]);}
     if(trail) map.removeLayer(trail);
-    trail = L.polyline(points,{color:sat.color, weight:2, opacity:0.8}).addTo(map);
-
-    sat.infoBox.innerHTML = `
-      Latitude: ${pos.lat.toFixed(2)}<br>
-      Longitude: ${pos.lon.toFixed(2)}<br>
-      Speed: ${sat.speed} km/s (~${(sat.speed*3600).toLocaleString()} km/h)<br>
-      Time: ${now.toLocaleTimeString()}
-    `;
-
+    trail=L.polyline(points,{color:sat.color,weight:2,opacity:0.8}).addTo(map);
+    sat.infoBox.innerHTML=`Latitude: ${pos.lat.toFixed(2)}<br>Longitude: ${pos.lon.toFixed(2)}<br>Speed: ${sat.speed} km/s (~${(sat.speed*3600).toLocaleString()} km/h)<br>Time: ${now.toLocaleTimeString()}`;
     requestAnimationFrame(updateSat);
-  }
-  updateSat();
+  } updateSat();
+});
+
+document.getElementById('moreSatellitesBtn').addEventListener('click', ()=>{
+  const nextSound=document.getElementById('nextPageSound');
+  nextSound.play();
+  setTimeout(()=>{ window.location.href='satellites.html'; }, 500);
 });
 </script>
-
 </body>
 </html>
-
