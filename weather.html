@@ -37,12 +37,26 @@ h2 { color: #0ff; text-shadow: 0 0 10px #0ff; }
   padding: 10px;
   min-width: 120px;
 }
-iframe {
-  width: 100%;
-  height: 60vh;
-  border: 1px solid #0ff;
+  .btn-zoom {
+  display: inline-block;
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #0ff;
+  background: linear-gradient(45deg, #001f33, #003366);
+  border: 2px solid #0ff;
   border-radius: 12px;
-  margin-top: 20px;
+  text-decoration: none;
+  text-shadow: 0 0 8px #0ff;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+
+.btn-zoom:hover {
+  color: #fff;
+  background: linear-gradient(45deg, #005580, #0077aa);
+  box-shadow: 0 0 30px rgba(0,255,255,0.6);
+  transform: translateY(-3px);
 }
 </style>
 </head>
@@ -59,7 +73,9 @@ iframe {
 
 <div class="container container-custom">
   <h2>🛰️ Live Satellite (Zoom Earth)</h2>
-  <iframe id="zoomEarth" src="https://zoom.earth/map/satellite/#view=42.068,19.512,6z"></iframe>
+  <a href="https://zoom.earth/map/satellite/#view=42.068,19.512,6z" target="_blank" class="btn btn-zoom">
+    Open Zoom Earth
+  </a>
 </div>
 
 <audio id="beep" src="./beep2.mp3" preload="auto"></audio>
