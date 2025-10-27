@@ -72,7 +72,6 @@ const beep = document.getElementById('beep');
 
 // Beep on any interaction (click or scroll)
 document.addEventListener('click', () => { beep.currentTime = 0; beep.play(); });
-document.addEventListener('scroll', () => { beep.currentTime = 0; beep.play(); });
 
 // Fetch current weather
 fetch(`https://api.openweathermap.org/data/2.5/weather?q=Shkoder,AL&appid=${API_KEY}&units=metric`)
