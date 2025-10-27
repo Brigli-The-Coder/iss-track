@@ -122,8 +122,10 @@ h2 { text-align: center; color: #0ff; margin-bottom: 10px; text-shadow: 0 0 10px
     </div>
     <div class="col-md-6 mb-3">
       <div class="container-custom">
-        <h2 class="text-warning">View More Satellites 🌌</h2>
+        <h2 class="text-warning">View More Satellites</h2>
         <div id="hubble-info"><button id="moreSatellitesBtn" class="btn-futuristic">Click Here</button></div>
+        <h2 class="text-warning">See the weather</h2>
+        <div id="hubble-info"><button id="weatherBtn" class="btn-futuristic">Click Here</button></div>
       </div>
     </div>
   </div>
@@ -135,7 +137,7 @@ h2 { text-align: center; color: #0ff; margin-bottom: 10px; text-shadow: 0 0 10px
 <audio id="touchSound" src="./beep2.mp3"></audio>
 <audio id="nextPageSound" src="./beep3.mp3"></audio>
 
-<div id="fullscreenModal"><h1>Welcome to the ISS & Satellites Tracker 🚀</h1></div>
+<div id="fullscreenModal"><h1>Welcome to the ISS & Satellites Tracker</h1></div>
 
 <script src="https://unpkg.com/satellite.js/dist/satellite.min.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -220,6 +222,12 @@ document.getElementById('moreSatellitesBtn').addEventListener('click', ()=>{
   nextSound.play();
   setTimeout(()=>{ window.location.href='satellites.html'; }, 500);
 });
+  document.getElementById('weatherBtn').addEventListener('click', ()=>{
+  const nextSound=document.getElementById('nextPageSound');
+  nextSound.play();
+  setTimeout(()=>{ window.location.href='weather.html'; }, 500);
+});
 </script>
 </body>
 </html>
+
